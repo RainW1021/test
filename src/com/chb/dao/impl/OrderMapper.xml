@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chb.dao.OrderDao">
+	<resultMap id="BaseResultMap" type="com.chb.entity.Order">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="orderNo" jdbcType="VARCHAR" property="orderNo" />
+		<result column="userId" jdbcType="INTEGER" property="userId" />
+		<result column="shopId" jdbcType="INTEGER" property="shopId" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="notes" jdbcType="VARCHAR" property="notes" />
+		<result column="sumMoney" jdbcType="DOUBLE" property="sumMoney" />
+		<result column="payMode" jdbcType="INTEGER" property="payMode" />
+		<result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="acceptTime" jdbcType="TIMESTAMP" property="acceptTime" />
+		<result column="shopConfirmTime" jdbcType="TIMESTAMP" property="shopConfirmTime" />
+		<result column="userConfirmTime" jdbcType="TIMESTAMP" property="userConfirmTime" />
+		<result column="isPay" jdbcType="INTEGER" property="isPay" />
+		<result column="paySerialsNumber" jdbcType="VARCHAR" property="paySerialsNumber" />
+		<association column="userId" jdbcType="INTEGER" property="user"
+			select="com.chb.dao.UserDao.selectUserNameByPrimaryKey" />
+		<association column="shopId" jdbcType="INTEGER" property="shop"
+			select="com.chb.dao.ShopDao.findShopById" />
+	</resultMap>
+
+	<resultMap id="userOrderList" type="com.chb.entity.Order"
+		extends="BaseResultMap">
+		<collection column="id" property="orderGoodsList"
+			ofType="com.chb.entity.OrderGoodsList" select="com.chb.dao.OrderGoodsListDao.selectOrderGoodsListByOrderId" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, orderNo,
+		userId,shopId,shopId,status,notes,sumMoney,payMode,createTime,
+		acceptTime,shopConfirmTime,userConfirmTime,isPay,paySerialsNumber
+	</sql>
+
+	<sql id="t_order">`order`</sql>
+
+	<!-- 商家分类分页查询订单列表总条数 -->
+	<select id="selectCountByPage" parameterType="java.util.Map"
+		resultType="java.lang.Long">
+		SELECT count(0) FROM
+		<include refid="t_order" />
+		<where>
+			<if test="page.keyWords != null and page.keyWords != ''">
+				<if test="page.fuzzy == true">
+					orderNo like '%' #{page.keyWords} '%'
+				</if>
+				<if test="page.fuzzy == false">
+					orderNo = #{page.keyWords}
+				</if>
+			</if>
+			<if test="order.status >= -1">
+				<if test="order.status == 1">
+					AND (status = 0 OR status = 1)
+				</if>
+				<if test="order.status == 2">
+					AND status = 2
+				</if>
+				<if test="order.status == 3">
+					AND status = 3
+				</if>
+				<if test="order.status == 4">
+					AND (status = 4 OR status = 5)
+				</if>
+			</if>
+			<if test="order.shopId != null and order.shopId != ''">
+				AND shopId = #{order.shopId}
+			</if>
+		</where>
+	</select>
+
+	<!-- 商家分类分页查询订单列表 -->
+	<select id="selectOrderListByPage" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="t_order" />
+		<where>
+			<if test="page.keyWords != null and page.keyWords != ''">
+				<if test="page.fuzzy == true">
+					orderNo like '%' #{page.keyWords} '%'
+				</if>
+				<if test="page.fuzzy == false">
+					orderNo = #{page.keyWords}
+				</if>
+			</if>
+			<if test="order.status >= -1">
+				<if test="order.status == 1">
+					AND (status = 0 OR status = 1)
+				</if>
+				<if test="order.status == 2">
+					AND status = 2
+				</if>
+				<if test="order.status == 3">
+					AND status = 3
+				</if>
+				<if test="order.status == 4">
+					AND (status = 4 OR status = 5)
+				</if>
+			</if>
+			<if test="order.shopId != null and order.shopId != ''">
+				AND shopId = #{order.shopId}
+			</if>
+		</where>
+		ORDER BY status DESC
+		<if test="page.pageNum > 0 and page.pageSize > 0">
+			limit #{page.startColum},#{page.pageSize}
+		</if>
+	</select>
+
+	<!-- 增加订单 -->
+	<insert id="addOrder" parameterType="Order">
+		<selectKey resultType="java.lang.Integer" keyProperty="id"
+			order="AFTER">
+			select @@IDENTITY as id
+		</selectKey>
+		INSERT INTO
+		<include refid="t_order" />
+		(orderNo,userId,shopId,notes,sumMoney,payMode)
+		VALUES
+		(#{orderNo},#{userId},#{shopId},#{notes},#{sumMoney},#{payMode})
+	</insert>
+
+	<!-- 修改订单编号 -->
+	<update id="updateOrderNum">
+		UPDATE
+		<include refid="t_order" />
+		SET
+		orderNo = #{orderNo} WHERE id = #{id}
+	</update>
+
+	<!-- 修改订单状态 -->
+	<update id="updateOrderStatus" parameterType="Order">
+		UPDATE
+		<include refid="t_order" />
+		SET
+		status = #{status} WHERE id = #{id}
+	</update>
+
+	<!-- 修改支付状态 -->
+	<update id="updateOrderPayStatus" parameterType="Order">
+		UPDATE
+		<include refid="t_order" />
+		SET
+		status = 1,
+		isPay = 1,
+		paySerialsNumber = #{paySerialsNumber}
+		WHERE
+		orderNo = #{orderNo}
+	</update>
+
+	<!-- 通过id查询订单 -->
+	<select id="selectOrderById" parameterType="Integer" resultType="Order">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="t_order" />
+		WHERE id = #{id}
+	</select>
+
+	<!-- 用户分类分页查询订单列表总条数 -->
+	<select id="selectCountByPageFromUser" parameterType="java.util.Map"
+		resultType="java.lang.Long">
+		SELECT count(0) FROM
+		<include refid="t_order" />
+		<where>
+			<if test="page.keyWords != null and page.keyWords != ''">
+				<if test="page.fuzzy == true">
+					orderNo like '%' #{page.keyWords} '%'
+				</if>
+				<if test="page.fuzzy == false">
+					orderNo = #{page.keyWords}
+				</if>
+			</if>
+			<if test="order.status >= -1">
+				AND status = #{order.status}
+				<if test="order.status == 0">
+					AND payMode = 0
+				</if>
+				<if test="order.status == 1">
+					OR (status = 0 AND payMode = 1)
+				</if>
+			</if>
+			<if test="order.userId != null and order.userId != ''">
+				AND userId = #{order.userId}
+			</if>
+		</where>
+	</select>
+
+	<!-- 用户分类分页查询订单列表 -->
+	<select id="selectOrderListByPageFromUser" parameterType="java.util.Map"
+		resultMap="userOrderList">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="t_order" />
+		<where>
+			<if test="page.keyWords != null and page.keyWords != ''">
+				<if test="page.fuzzy == true">
+					orderNo like '%' #{page.keyWords} '%'
+				</if>
+				<if test="page.fuzzy == false">
+					orderNo = #{page.keyWords}
+				</if>
+			</if>
+			<if test="order.status >= -1">
+				AND status = #{order.status}
+				<if test="order.status == 0">
+					AND payMode = 0
+				</if>
+				<if test="order.status == 1">
+					OR (status = 0 AND payMode = 1)
+				</if>
+			</if>
+			<if test="order.userId != null and order.userId != ''">
+				AND userId = #{order.userId}
+			</if>
+		</where>
+		<if test="page.pageNum > 0 and page.pageSize > 0">
+			limit #{page.startColum},#{page.pageSize}
+		</if>
+	</select>
+	
+	<!-- 催单 -->
+	<update id="updateReminderById" parameterType="Integer">
+		UPDATE <include refid="t_order" /> SET reminder = 1 WHERE id = #{id}
+	</update>
+	
+	<!-- 根据订单价格查询订单数量 -->
+	<select id="selectCountByPrice" parameterType="long" resultType="java.lang.Long">
+		SELECT count(0) FROM `order` WHERE sumMoney between ${_parameter*20}
+		and ${(_parameter+1)*20}
+	</select>
+	
+	<!-- 根据订单支付方式查询订单数量 -->
+	<select id="selectCountByPayMode" parameterType="long"
+		resultType="java.lang.Long">
+		SELECT count(0) FROM `order` WHERE payMode =${_parameter}
+	</select>
+</mapper>
