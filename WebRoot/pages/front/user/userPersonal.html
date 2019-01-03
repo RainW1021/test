@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>个人主页</title>
+    <link rel="stylesheet" href="../../../css/user/user.css"/>
+    <!-- bootstrap -->
+    <link href="../../../css/lib/bootstrap.min.css" rel="stylesheet">
+    <!-- animate -->
+    <link href="../../../css/lib/animate.css" rel="stylesheet">
+    <!-- font-awesome -->
+    <link rel="stylesheet" href="../../../../css/lib/font-awesome/css/font-awesome.min.css">
+    <!-- my styles -->
+    <link rel="stylesheet" href="../../../layui/css/layui.css">
+
+</head>
+
+<style type="text/css">
+    a {
+        text-decoration: none;
+        outline: none;
+    }
+
+    a:hover {
+        text-decoration: none;
+        outline: none;
+    }
+
+    a:link {
+        text-decoration: none;
+        outline: none;
+    }
+
+    a:visited {
+        text-decoration: none;
+        outline: none;
+    }
+
+    a:hover {
+        text-decoration: none;
+        outline: none;
+    }
+
+    a:active {
+        text-decoration: none;
+        outline: none;
+    }
+
+
+</style>
+
+
+<body>
+<input id="hidden_pass" type="hidden"></input>
+<div id="all">
+
+    <ul class="layui-nav" style="background-color: #008de1" lay-filter="">
+        <li class="layui-nav-item"><a href="#"><img height="40px" src="../../../img/nLogo.PNG"/></a></li>
+        <li class="layui-nav-item"><a href="../shopBrowse.html">首页</a></li>
+        <li class="layui-nav-item" style="float: right;"><a href="javascript:;" onclick="logout()">退出</a></li>
+    </ul>
+    <!-- 导航栏 -->
+    <div id="left">
+        <ul id="myTab" class="nav " style="width:100%;height:100%">
+            <img id="left_favicon" class="img-circle" src="../../../img/nLogo.PNG"/>
+            <li class="dropdown" style="margin-top:30px;text-align:center;">
+                <a href="#" id="me" class="dropdown-toggle menu-item">个人信息</a>
+            </li>
+
+            <li class="dropdown" class="active" style="text-align:center;cursor: pointer">
+                <a href="../order/user-order.html" id="order" class="dropdown-toggle menu-item">我的订单</a>
+            </li>
+
+            <li class="dropdown" style="text-align:center">
+                <a href="userMessage.html" id="myMes" class="dropdown-toggle menu-item">我的消息</a>
+            </li>
+
+        </ul>
+    </div>
+    <!-- 分页 -->
+    <div class="tab-content" id="container">
+        <div class="type-nav">
+            <a class="tab active" href="#data" data-toggle="tab">个人信息</a>
+            <a class="tab" href="#location" data-toggle="tab">位置管理</a>
+        </div>
+        <!-- 个人资料-->
+        <div class="tab-pane fade in active" id="data">
+            <label style="font-family:Times New Roman,Times,serif;margin-left:200px;margin-top:80px">头像:</label>
+            <img id="favicon" class="img-thumbnail" src="../../../img/defa_favicon.png"
+                 style="margin-left:150px;width:150px;height:150px"> </img>
+
+            <!-- 头像上传 -->
+            <form id="faviconForm" action="../../../uploadPhoto.do" enctype="multipart/form-data" method="post">
+                <div style="width:120px;height:25px;margin-left:400px;margin-top:10px;">
+                    <div id="fileBtn" class="btn btn-default btn-sm" style="width: 58px;height: 28px">浏览
+                        <input id="selectFavicon" type="file" name="faviCon" value="">
+                    </div>
+                    <div id="saveFavicon" class="btn btn-default btn-sm" style="width: 58px;height: 28px">保存</div>
+                </div>
+            </form>
+
+
+            <label style="font-family:Times New Roman,Times,serif;margin-left:200px;margin-top:10px">用户名:</label>
+            <label id="name" style="margin-left:190px"></label></br>
+
+            <label style="font-family:Times New Roman,Times,serif;margin-left:200px;margin-top:30px">手机:</label>
+            <label id="phone" style="margin-left:190px"></label></br>
+
+            <label style="font-family:Times New Roman,Times,serif;margin-left:200px;margin-top:30px">邮箱:</label>
+            <label id="email" style="margin-left:190px"></label></br>
+
+            <label style="font-family:Times New Roman,Times,serif;margin-left:200px;margin-top:30px">注册时间:</label>
+            <label id="register_time" style="margin-left:165px"></label></br>
+
+            <label style="font-family:Times New Roman,Times,serif;margin-left:200px;margin-top:30px">密码:</label>
+            <label id="pass" style="margin-left:165px"></label>
+
+            <a href="#updatePass" data-toggle="tab" style="margin-left:50px">修改</a>
+
+        </div>
+        <!-- 位置管理 -->
+        <div class="tab-pane fade" id="location">
+            <div style="margin:15px;">
+                <p>位置管理</p>
+            </div>
+        </div>
+
+        <!-- 修改密码 -->
+        <div class="tab-pane fade" id="updatePass">
+
+            <div style="width:300px;margin-left:350px;margin-top:80px">
+                <div class="input-group">
+                    <span class="input-group-addon">旧密码</span>
+                    <input id="oldPass" type="password" class="form-control" placeholder="旧密码">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">新密码</span>
+                    <input id="newPass" type="password" class="form-control" placeholder="新密码">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">新密码</span>
+                    <input id="Conf_Pass" type="password" class="form-control" placeholder="确认新密码">
+                </div>
+            </div>
+
+            <button id="udPass" class="btn btn-danger" style="margin-top:20px;margin-left:450px">确认修改</button>
+        </div>
+
+    </div>
+
+    <!-- <div id="foot">
+
+    </div> -->
+
+</div>
+<script src="http://static.runoob.com/assets/jquery-validation-1.14.0/lib/jquery.js"></script>
+<script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
+<script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/localization/messages_zh.js"></script>
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
+<script type="text/javascript" src="../../../js/user/jqPaginator.js"></script>
+<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        isUserLogin("userLogin.html");
+        var $name_title = $("#userN");
+        var $name = $("#name");
+        var $phone = $("#phone");
+        var $email = $("#email");
+        var $userPass = $("#hidden_pass");
+        var $register_time = $("#register_time");
+       /* var $head_fa = $("#head_favicon");*/
+        var $left_fa = $("#left_favicon");
+        var $favicon = $("#favicon");
+
+        // 菜单跳转
+        $(".tab").click(function () {
+            $(this).siblings().removeClass("active")
+            $(this).addClass("active")
+        })
+
+        $.ajax({
+            type: "post", url: rootPath + "/getSession.do", success: function (result) {      //数据初始化
+                $name_title.text(result.userName);
+                $name.text(result.userName);
+                $phone.text(result.phone);
+                $email.text(result.email);
+                $register_time.text(result.registerTime)
+                $userPass.val(result.password);
+                $head_fa.attr("src", result.photo);
+                $left_fa.attr("src", result.photo);
+                $favicon.attr("src", result.photo);
+            }
+        });
+
+        $("#udPass").click(function () {
+            var $oldPass = $("#oldPass");
+            var $newPass = $("#newPass");
+            var $Conf_Pass = $("#Conf_Pass");
+            var $userPass = $("#hidden_pass");
+
+            if ($oldPass.val() != "") {             //原密码不为空
+                if ($newPass.val() == "") {            //新密码为空
+                    alert("新密码不能为空");
+                } else if ($Conf_Pass.val() == "") {   //确认密码为空
+                    alert("确认密码不能为空");
+                } else {                            //都不为空
+                    if (verfyEqual($newPass.val(), $Conf_Pass.val())) { //新密码和确认密码相同
+                        if (verfyEqual($oldPass.val(), $userPass.val())) {                 //原密码和真密码相同*******************************************
+                            $.ajax({
+                                type: "post",
+                                url: rootPath + "/updatePass.do",
+                                data: "newPass=" + $newPass.val(),
+                                success: function (result) {
+                                    if (result = "1") {
+                                        alert("修改成功");
+                                    }
+                                }
+                            });
+                        } else {                            //原密码和真密码不相同
+                            alert("原密码错误");
+                        }
+
+
+                    } else {
+                        alert("不相同");
+                    }
+                }
+            } else {                       //原密码为空
+                alert("原密码不能为空");
+            }
+        });
+
+        $("#selectFavicon").change(function () {		    //选择文件后
+            var form = $("#faviconForm");
+            var options = {
+                type: 'post',
+                success: function (data)           //表单提交成功回调，返回图片名
+                {
+                    if (data == "0") {
+                        alert("必须为图片类型");
+                    } else {
+                        var path = "/pic/" + data;       //虚拟目录地址
+                        var $favicon = $("#favicon");
+                        $favicon.attr("src", path);   //设置
+                    }
+
+                }
+            };
+            form.ajaxSubmit(options);               //提交表单
+
+        });
+
+        $("#saveFavicon").click(function () {                 //保存头像
+            var $photoPath = $("#favicon").attr("src");
+            var $username = $("#name").text();
+            var $head_fa = $("#head_favicon");
+            var $left_fa = $("#left_favicon");
+            $.ajax({
+                type: "post",
+                url: rootPath + "/updatePhoto.do",
+                data: "photoPath=" + $photoPath + "&username=" + $username,
+                success: function (result) {
+                    if (result == "1") {
+                        $head_fa.attr("src", $photoPath);
+                        $left_fa.attr("src", $photoPath);
+                        alert("保存成功");
+                    }
+                }
+            });
+        });
+    });
+
+    var rootPath = getRootPath_web();
+
+    function getRootPath_web() {
+        //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+        var curWwwPath = window.document.location.href;
+        //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        //获取主机地址，如： http://localhost:8083
+        var localhostPaht = curWwwPath.substring(0, pos);
+        //获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPaht + projectName);
+    }
+
+    function verfyEqual(value1, value2) {
+        if (value1 == value2) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 退出登录
+     * @returns
+     */
+    function logout() {
+        $.ajax({
+            url: rootPath + "/logout.do",
+            dataType: "json",
+            success: function (data) {
+                sessionStorage.setItem("userToken", "false");
+                window.location.href = "../shopBrowse.html";
+            }
+        });
+    }
+
+</script>
+<script src="../../../js/utils/pathUtil.js"></script>
+</body>
+</html>
